@@ -1,1 +1,1 @@
-{"name":"devops-node-app","version":"1.0.0","scripts":{"start":"node server.js"},"dependencies":{"mongodb":"^7.7.0"}}
+{"name":"devops-node-app","version":"1.0.0","scripts":{"start":"node server.js","test":"node --test"},"dependencies":{"mongodb":"^7.7.0"},"devDependencies":{"supertest":"^7.3.1"}}

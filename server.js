@@ -1,7 +1,7 @@
 const http = require("http");
 const { MongoClient } = require("mongodb");
 
-const mongoUrl = "mongodb://mongodb:27017";
+const mongoUrl = process.env.MONGO_URL || "mongodb://mongodb:27017";
 const client = new MongoClient(mongoUrl);
 
 async function startServer() {
@@ -32,8 +32,10 @@ async function startServer() {
       }
     });
 
-    server.listen(3000, () => {
-      console.log("Server running on port 3000");
+    const port = process.env.PORT || 3000;
+
+    server.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
   } catch (error) {
     console.error("Could not connect to MongoDB:", error);
@@ -41,4 +43,6 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
