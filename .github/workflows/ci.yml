@@ -44,3 +44,23 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-node-app:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-node-app:${{ github.sha }}
+
+  deploy:
+    needs: docker-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.EC2_HOST }}
+          username: ${{ vars.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/devops-deployment
+            sed -i "s|image: rizwan198/devops-node-app:.*|image: rizwan198/devops-node-app:${{ github.sha }}|" compose.yaml
+            sudo docker compose pull app
+            sudo docker compose up -d app
+            curl --fail http://localhost/
+            curl --fail http://localhost/db
