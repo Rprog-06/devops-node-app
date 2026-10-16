@@ -1,10 +1,14 @@
 services:
   app:
     build: .
+    image: devops-node-app:slim
     ports:
       - "3000:3000"
+    environment:
+      MONGO_URL: mongodb://mongodb:27017
     depends_on:
       - mongodb
+    restart: unless-stopped
 
   mongodb:
     image: mongo:7
