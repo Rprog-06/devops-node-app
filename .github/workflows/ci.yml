@@ -68,6 +68,7 @@ jobs:
 
           INSTANCE_ID="i-04644944510a4b02d"
 
+
           PARAMETERS=$(jq -n --arg tag "$IMAGE_TAG" '{
             commands: [
               "set -e",
@@ -75,10 +76,10 @@ jobs:
               ("sed -i \"s|image: rizwan198/devops-node-app:.*|image: rizwan198/devops-node-app:" + $tag + "|\" compose.yaml"),
               "sudo docker compose pull app",
               "sudo docker compose up -d app",
-              "curl --fail http://localhost/",
-              "curl --fail http://localhost/db"
+              "for i in $(seq 1 12); do if curl --fail --silent http://localhost/ && curl --fail --silent http://localhost/db; then exit 0; fi; sleep 5; done; echo 'Health checks failed'; exit 1"
             ]
           }')
+
 
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
