@@ -27,6 +27,9 @@ jobs:
       - name: Run automated tests
         run: npm test
 
+      - name: Validate Docker Compose configuration
+        run: docker compose config -q
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
